@@ -19,16 +19,16 @@ const logger = winston.createLogger({
 });
 
 class TokenInfo {
-  constructor(updated, potoken, visitorData) {
+  constructor(updated, poToken, visitorData) {
     this.updated = updated;
-    this.potoken = potoken;
+    this.poToken = poToken;
     this.visitorData = visitorData;
   }
 
   toJSON() {
     return JSON.stringify({
       updated: this.updated,
-      potoken: this.potoken,
+      poToken: this.poToken,
       visitorData: this.visitorData,
     });
   }
@@ -118,17 +118,17 @@ class PotokenExtractor {
           try {
             const postData = JSON.parse(request.postData());
             const visitorData = postData.context.client.visitorData;
-            const potoken = postData.serviceIntegrityDimensions.poToken;
+            const poToken = postData.serviceIntegrityDimensions.poToken;
 
-            if (potoken && visitorData) {
-              this.tokenInfo = new TokenInfo(Date.now(), potoken, visitorData);
-              if(this.tokenIno.potoken.length < 160) {
+            if (poToken && visitorData) {
+              this.tokenInfo = new TokenInfo(Date.now(), poToken, visitorData);
+              if(poToken.length < 160) {
                 winston.warn("There is a high chance that the potoken generated won't work. Please try again on another internet connection.");
                 exit(1);
               }
               
-              logger.info(`poToken: ${this.tokenInfo.potoken.toJSON()}`);
-              logger.info(`visitorData: ${this.tokenInfo.visitorData.toJSON()}`)
+              logger.info(`poToken: ${potoken}`);
+              logger.info(`visitorData: ${visitorData}`)
               tokenExtracted = true;
               this.eventEmitter.emit('extractionDone', true);
             }
