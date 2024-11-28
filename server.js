@@ -15,7 +15,9 @@ const logger = winston.createLogger({
     new winston.transports.Console(),
   ]
 });
-
+if (logger.transports.length === 0) {
+  logger.add(new winston.transports.Console());
+}
 class PotokenServer {
   constructor(potokenExtractor, port = 8080, bindAddress = '0.0.0.0') {
     this.port = port;
