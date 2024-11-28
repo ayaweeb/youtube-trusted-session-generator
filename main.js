@@ -5,19 +5,18 @@ import PotokenExtractor from './extractor.js'; // Import from previous translati
 import PotokenServer from './server.js'; // Import from previous translation
 
 // Logger setup
-function setupLogging(logLevel = 'info') {
-  winston.configure({
-    level: logLevel,
-    format: winston.format.combine(
-      winston.format.timestamp({ format: 'YYYY/MM/DD HH:mm:ss' }),
-      winston.format.printf(
-        ({ timestamp, level, message }) =>
-          `${timestamp} [${level.toUpperCase()}] ${message}`
-      )
-    ),
-    transports: [new winston.transports.Console()],
-  });
-}
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+  ]
+});
 
 // Print token and exit
 function printTokenAndExit(tokenInfo) {
@@ -109,8 +108,6 @@ function parseArguments() {
 // Main entry point
 (async function main() {
   const args = parseArguments();
-
-  setupLogging(args.oneshot ? 'warn' : 'info');
 
   try {
     await run({
