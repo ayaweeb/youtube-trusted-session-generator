@@ -3,6 +3,20 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { EventEmitter } from 'events';
+import winston from 'winston';
+
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+  ]
+});
 
 class TokenInfo {
   constructor(updated, potoken, visitorData) {
@@ -44,9 +58,9 @@ class PotokenExtractor {
     await this._update();
     setInterval(async () => {
       if (this.updateRequested) {
-        console.log('Initiating forced update');
+        logger.info('Initiating forced update');
       } else {
-        console.log('Initiating scheduled update');
+        logger.info('Initiating scheduled update');
       }
       await this._update();
       this.updateRequested = false;
@@ -55,30 +69,30 @@ class PotokenExtractor {
 
   requestUpdate() {
     if (this.isUpdating) {
-      console.log('Update process is already running');
+      logger.warn('Update process is already running');
       return false;
     }
     if (this.updateRequested) {
-      console.log('Forced update has already been requested');
+      logger.info('Forced update has already been requested');
       return false;
     }
     this.updateRequested = true;
-    console.log('Forced update requested');
+    logger.info('Forced update requested');
     return true;
   }
 
   async _update() {
     if (this.isUpdating) {
-      console.log('Update is already in progress');
+      logger.info('Update is already in progress');
       return;
     }
 
     this.isUpdating = true;
     try {
-      console.log('Update started');
+      logger.info('Update started');
       await this._performUpdate();
     } catch (error) {
-      console.error('Update failed:', error);
+      logger.error('Update failed:', error);
     } finally {
       this.isUpdating = false;
     }
@@ -108,12 +122,12 @@ class PotokenExtractor {
 
             if (potoken && visitorData) {
               this.tokenInfo = new TokenInfo(Date.now(), potoken, visitorData);
-              console.log(`New token: ${this.tokenInfo.toJSON()}`);
+              logger.info(`New token: ${this.tokenInfo.toJSON()}`);
               tokenExtracted = true;
               this.eventEmitter.emit('extractionDone', true);
             }
           } catch (error) {
-            console.warn(`Failed to extract token: ${error}`);
+            logger.error(`Failed to extract token: ${error}`);
           }
         }
         request.continue();
@@ -128,7 +142,7 @@ class PotokenExtractor {
         await this._waitForHandler();
       }
     } catch (error) {
-      console.error('Error in _performUpdate:', error);
+      logger.error('Error in _performUpdate:', error);
     } finally {
       if (browser) {
         await browser.close();
@@ -142,7 +156,7 @@ class PotokenExtractor {
       await page.click('#movie_player');
       return true;
     } catch (error) {
-      console.warn('Failed to locate or click video player:', error);
+      logger.error('Failed to locate or click video player:', error);
       return false;
     }
   }
@@ -150,13 +164,13 @@ class PotokenExtractor {
   async _waitForHandler() {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
-        console.warn('Timeout waiting for outgoing API request');
+        logger.warn('Timeout waiting for outgoing API request');
         resolve(false);
       }, 30000);
 
       this.eventEmitter.once('extractionDone', () => {
         clearTimeout(timeout);
-        console.log('Extraction successful');
+        logger.info('Extraction successful');
         resolve(true);
       });
     });
