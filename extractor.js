@@ -120,9 +120,7 @@ class PotokenExtractor {
       });
 
       // Navigate to YouTube video
-      await page.goto('https://www.youtube.com/embed/jNQXAC9IVRw', {
-        waitUntil: 'domcontentloaded',
-      });
+      await page.goto('https://www.youtube.com/embed/jNQXAC9IVRw');
 
       // Click on the video player
       const playerClicked = await this._clickOnPlayer(page);
