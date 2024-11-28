@@ -2,6 +2,19 @@ import http from 'http';
 import url from 'url';
 import EventEmitter from 'events';
 
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.printf(({ timestamp, level, message }) => {
+      return `${timestamp} [${level}]: ${message}`;
+    })
+  ),
+  transports: [
+    new winston.transports.Console(),
+  ]
+});
+
 class PotokenServer {
   constructor(potokenExtractor, port = 8080, bindAddress = '0.0.0.0') {
     this.port = port;
@@ -80,10 +93,10 @@ class PotokenServer {
 
   // Start the HTTP server
   run() {
-    console.log(`Starting web-server at ${this.bindAddress}:${this.port}`);
+    logger.info(`Starting web-server at ${this.bindAddress}:${this.port}`);
     this.server = http.createServer(this.app.bind(this));
     this.server.listen(this.port, this.bindAddress, () => {
-      console.log(`Server is running at http://${this.bindAddress}:${this.port}/`);
+      logger.info(`Server is running at http://${this.bindAddress}:${this.port}/`);
     });
   }
 
@@ -91,7 +104,7 @@ class PotokenServer {
   stop() {
     if (this.server) {
       this.server.close(() => {
-        console.log('Server stopped.');
+        logger.info('Server stopped.');
       });
     }
   }
