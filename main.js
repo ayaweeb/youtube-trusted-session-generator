@@ -26,8 +26,8 @@ function printTokenAndExit(tokenInfo) {
   }
 
   const { visitor_data, potoken } = tokenInfo;
-  console.log(`visitor_data: ${visitor_data}`);
-  console.log(`po_token: ${potoken}`);
+  logger.info(`visitor_data: ${visitor_data}`);
+  logger.info(`po_token: ${potoken}`);
 
   if (potoken.length < 160) {
     winston.warn(
