@@ -1,0 +1,18 @@
+{
+  "name": "youtube-trusted-session-generator",
+  "version": "1.0.0",
+  "description": "A youtube trusted session extractor but in javascript",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "author": "Aya",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "puppeteer": "^23.9.0",
+    "winston": "^3.17.0"
+  }
+}
