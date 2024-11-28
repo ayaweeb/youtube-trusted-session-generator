@@ -1,6 +1,7 @@
 import http from 'http';
 import url from 'url';
 import EventEmitter from 'events';
+import winston from 'winston';
 
 const logger = winston.createLogger({
   level: 'info',
