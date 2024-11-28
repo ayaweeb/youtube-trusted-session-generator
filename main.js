@@ -15,7 +15,9 @@ const logger = winston.createLogger({
     new winston.transports.Console(),
   ]
 });
-
+if (logger.transports.length === 0) {
+  logger.add(new winston.transports.Console());
+}
 async function main() {
   try {
     const updateInterval = 300; // 5 minutes
