@@ -125,7 +125,7 @@ class PotokenExtractor {
               this.tokenInfo = new TokenInfo(Date.now(), poToken, visitorData);
               if(poToken.length < 160) {
                 winston.warn("There is a high chance that the potoken generated won't work. Please try again on another internet connection.");
-                exit(1);
+                process.exit(1)
               }
               
               logger.info(`poToken: ${potoken}`);
