@@ -21,7 +21,7 @@ async function main() {
   try {
     const updateInterval = 300; // 5 minutes
     const port = 8080;
-    const bindAddress = '127.0.0.1';
+    const bindAddress = '0.0.0.0';
     const chromePath = null; // Optional: provide path to Chrome/Chromium executable
 
     // Create extractor and run
