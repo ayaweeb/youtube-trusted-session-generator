@@ -88,9 +88,10 @@ class PotokenExtractor {
     let browser;
     try {
       browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         executablePath: this.browserPath,
         userDataDir: this.profilePath,
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
       });
       const page = await browser.newPage();
 
